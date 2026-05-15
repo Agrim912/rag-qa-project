@@ -56,6 +56,7 @@ async def readiness_check() -> ReadinessResponse:
             status="ready",
             qdrant_connected=True,
             collection_info=collection_info,
+            total_size=collection_info.get("total_size_mb", 0.0),
         )
     except HTTPException:
         raise

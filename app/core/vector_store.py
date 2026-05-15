@@ -1,6 +1,7 @@
 """Vector store module for Qdrant operations."""
 
 from functools import lru_cache
+import os
 from typing import Any
 from uuid import uuid4
 
@@ -34,7 +35,7 @@ def get_qdrant_client() -> QdrantClient:
         url=settings.qdrant_url,
         api_key=settings.qdrant_api_key,
     )
-
+    
     logger.info("Qdrant client connected successfully")
     return client
 
@@ -186,6 +187,7 @@ class VectorStoreService:
                 "points_count": info.points_count,
                 "indexed_vectors_count": info.indexed_vectors_count,
                 "status": info.status.value,
+                # "total_size_mb": info.storage_info.disk_usage / (1024 * 1024) if info.storage_info else None,
             }
         except UnexpectedResponse:
             return {
