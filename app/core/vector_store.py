@@ -35,7 +35,7 @@ def get_qdrant_client() -> QdrantClient:
         url=settings.qdrant_url,
         api_key=settings.qdrant_api_key,
     )
-
+    
     logger.info("Qdrant client connected successfully")
     return client
 
