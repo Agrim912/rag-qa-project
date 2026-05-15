@@ -57,6 +57,7 @@ async def upload_document(
         #         detail=f"Total size of collection must be at most {processor.total_size} MB (current size: {current_size:.2f} MB)",
         #     )
         
+        
         chunks = processor.process_upload(file.file, file.filename)
 
         if not chunks:
