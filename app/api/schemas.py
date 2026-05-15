@@ -25,6 +25,7 @@ class ReadinessResponse(BaseModel):
     status: str = Field(..., description="Service status")
     qdrant_connected: bool = Field(..., description="Qdrant connection status")
     collection_info: dict = Field(..., description="Collection information")
+    total_size: float = Field(..., description="Total size of documents in collection (MB)")
 
 
 # ============== Document Schemas ==============

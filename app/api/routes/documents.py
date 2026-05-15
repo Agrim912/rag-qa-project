@@ -1,7 +1,7 @@
 """Document management endpoints."""
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-
+import os
 from app.api.schemas import (
     DocumentListResponse,
     DocumentUploadResponse,
@@ -41,6 +41,22 @@ async def upload_document(
     try:
         # Process document
         processor = DocumentProcessor()
+        # If file size > document_size mb then raise error
+        if file.size > processor.document_size * 1024 * 1024:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File size must be at most {processor.document_size} MB",
+            )
+        # total size user can upload is total_size - current size of collection
+        # vector_store = VectorStoreService()
+        # collection_info = vector_store.get_collection_info()
+        # current_size = collection_info.get("total_size_mb", 0.0)
+        # if current_size + file.size > processor.total_size * 1024 * 1024:
+        #     raise HTTPException(
+        #         status_code=400,
+        #         detail=f"Total size of collection must be at most {processor.total_size} MB (current size: {current_size:.2f} MB)",
+        #     )
+        
         chunks = processor.process_upload(file.file, file.filename)
 
         if not chunks:
@@ -85,7 +101,7 @@ async def upload_document(
 async def get_collection_info() -> DocumentListResponse:
     """Get information about the document collection."""
     logger.debug("Collection info requested")
-
+    print("Collection info requested")
     try:
         vector_store = VectorStoreService()
         info = vector_store.get_collection_info()

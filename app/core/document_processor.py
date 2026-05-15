@@ -35,6 +35,8 @@ class DocumentProcessor:
             chunk_overlap: Overlap between chunks (default from settings)
         """
         settings = get_settings()
+        self.document_size=settings.document_size
+        # self.total_size=settings.total_size
         self.chunk_size = chunk_size or settings.chunk_size
         self.chunk_overlap = chunk_overlap or settings.chunk_overlap
 
