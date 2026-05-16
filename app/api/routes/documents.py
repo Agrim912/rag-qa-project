@@ -1,6 +1,5 @@
 """Document management endpoints."""
 
-
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from app.api.schemas import (
