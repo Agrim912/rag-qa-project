@@ -80,11 +80,19 @@ app.include_router(documents.router)
 app.include_router(query.router)
 
 
-@app.get("/", response_class=HTMLResponse, tags=["Root"])
-async def root():
-    """Serve the main UI."""
-    with open("static/index.html") as f:
-        return f.read()
+@app.get("/", tags=["Root"])
+async def root(request: Request):
+    """Serve the main UI for browsers or return API root metadata."""
+    accept_header = request.headers.get("accept", "")
+    if "text/html" in accept_header or "application/xhtml+xml" in accept_header:
+        with open("static/index.html") as f:
+            return HTMLResponse(f.read())
+
+    return {
+        "message": "RAG Q&A System is running",
+        "version": __version__,
+        "docs": "/docs",
+    }
 
 
 @app.exception_handler(Exception)
