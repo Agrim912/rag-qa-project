@@ -41,12 +41,31 @@ async def upload_document(
     try:
         # Process document
         processor = DocumentProcessor()
+
+        file_size = getattr(file, "size", None)
+        if not isinstance(file_size, int):
+            try:
+                current_position = file.file.tell()
+                file.file.seek(0, 2)
+                file_size = file.file.tell()
+                file.file.seek(current_position)
+            except (AttributeError, OSError, TypeError):
+                file_size = None
+
+        if not isinstance(file_size, int):
+            file_size = None
+
+        document_size = getattr(processor, "document_size", None)
+        if not isinstance(document_size, (int, float)):
+            document_size = None
+
         # If file size > document_size mb then raise error
-        if file.size > processor.document_size * 1024 * 1024:
-            raise HTTPException(
-                status_code=400,
-                detail=f"File size must be at most {processor.document_size} MB",
-            )
+        if file_size is not None and document_size is not None:
+            if file_size > document_size * 1024 * 1024:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"File size must be at most {document_size} MB",
+                )
         # total size user can upload is total_size - current size of collection
         # vector_store = VectorStoreService()
         # collection_info = vector_store.get_collection_info()
