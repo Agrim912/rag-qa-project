@@ -1,7 +1,6 @@
 """Vector store module for Qdrant operations."""
 
 from functools import lru_cache
-import os
 from typing import Any
 from uuid import uuid4
 
@@ -35,7 +34,7 @@ def get_qdrant_client() -> QdrantClient:
         url=settings.qdrant_url,
         api_key=settings.qdrant_api_key,
     )
-    
+
     logger.info("Qdrant client connected successfully")
     return client
 

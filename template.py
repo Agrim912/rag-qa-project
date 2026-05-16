@@ -18,7 +18,6 @@ This will create the following structure:
     └── .github/workflows/
 """
 
-import os
 from pathlib import Path
 
 # Project root directory name
@@ -76,7 +75,6 @@ LOG_LEVEL=INFO
 API_HOST=0.0.0.0
 API_PORT=8000
 """,
-
     ".gitignore": """# Python
 __pycache__/
 *.py[cod]
@@ -116,7 +114,6 @@ logs/
 # OS
 .DS_Store
 """,
-
     "requirements.txt": """# Core Framework
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
@@ -143,7 +140,6 @@ python-dotenv>=1.0.0
 # HTTP Client
 httpx>=0.26.0
 """,
-
     "requirements-dev.txt": """-r requirements.txt
 
 # Testing
@@ -155,7 +151,6 @@ pytest-cov>=4.1.0
 ruff>=0.2.0
 black>=24.1.0
 """,
-
     "pytest.ini": """[pytest]
 testpaths = tests
 python_files = test_*.py
@@ -163,7 +158,6 @@ python_functions = test_*
 asyncio_mode = auto
 addopts = -v --tb=short
 """,
-
     "Dockerfile": """FROM python:3.12-slim as builder
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
@@ -185,7 +179,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD python -c "import httpx; httpx.get('http://localhost:8000/health')" || exit 1
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 """,
-
     "docker-compose.yml": """version: "3.8"
 
 services:
@@ -200,7 +193,6 @@ services:
       - .env
     restart: unless-stopped
 """,
-
     # ===========================================
     # App Package Files
     # ===========================================
@@ -208,7 +200,6 @@ services:
 
 __version__ = "0.1.0"
 ''',
-
     "app/config.py": '''"""Application configuration using pydantic-settings."""
 
 from functools import lru_cache
@@ -264,7 +255,6 @@ def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()
 ''',
-
     "app/main.py": '''"""FastAPI application entry point."""
 
 from contextlib import asynccontextmanager
@@ -320,7 +310,6 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host=settings.api_host, port=settings.api_port, reload=True)
 ''',
-
     # ===========================================
     # Utils Package
     # ===========================================
@@ -330,7 +319,6 @@ from app.utils.logger import get_logger
 
 __all__ = ["get_logger"]
 ''',
-
     "app/utils/logger.py": '''"""Logging configuration."""
 
 import logging
@@ -364,13 +352,11 @@ def get_logger(name: str) -> logging.Logger:
     """Get a logger instance."""
     return logging.getLogger(name)
 ''',
-
     # ===========================================
     # API Package
     # ===========================================
     "app/api/__init__.py": '''"""API layer package."""
 ''',
-
     "app/api/schemas.py": '''"""Pydantic schemas for API request/response models."""
 
 from datetime import datetime
@@ -407,10 +393,8 @@ class QueryResponse(BaseModel):
     sources: list[SourceDocument] | None = None
     processing_time_ms: float
 ''',
-
     "app/api/routes/__init__.py": '''"""API routes package."""
 ''',
-
     "app/api/routes/health.py": '''"""Health check endpoints."""
 
 from datetime import datetime
@@ -425,7 +409,6 @@ router = APIRouter(prefix="/health", tags=["Health"])
 async def health_check() -> HealthResponse:
     return HealthResponse(status="healthy", timestamp=datetime.utcnow(), version=__version__)
 ''',
-
     "app/api/routes/documents.py": '''"""Document management endpoints."""
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
@@ -475,7 +458,6 @@ async def get_collection_info():
     vector_store = VectorStoreService()
     return vector_store.get_collection_info()
 ''',
-
     "app/api/routes/query.py": '''"""Query endpoints for RAG Q&A."""
 
 import time
@@ -520,13 +502,11 @@ async def query(request: QueryRequest) -> QueryResponse:
         logger.error(f"Error processing query: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 ''',
-
     # ===========================================
     # Core Package
     # ===========================================
     "app/core/__init__.py": '''"""Core business logic package."""
 ''',
-
     "app/core/document_processor.py": '''"""Document processing module."""
 
 import tempfile
@@ -592,7 +572,6 @@ class DocumentProcessor:
         finally:
             Path(tmp_path).unlink(missing_ok=True)
 ''',
-
     "app/core/embeddings.py": '''"""Embedding generation module."""
 
 from functools import lru_cache
@@ -610,7 +589,6 @@ def get_embeddings() -> OpenAIEmbeddings:
         openai_api_key=settings.openai_api_key,
     )
 ''',
-
     "app/core/vector_store.py": '''"""Vector store module for Qdrant operations."""
 
 from functools import lru_cache
@@ -681,7 +659,6 @@ class VectorStoreService:
         except UnexpectedResponse:
             return {"name": self.collection_name, "points_count": 0, "status": "not_found"}
 ''',
-
     "app/core/rag_chain.py": '''"""RAG chain module using LangChain LCEL."""
 
 from langchain_core.documents import Document
@@ -745,13 +722,11 @@ class RAGChain:
         ]
         return {"answer": answer, "sources": sources}
 ''',
-
     # ===========================================
     # Tests Package
     # ===========================================
     "tests/__init__.py": '''"""Test suite package."""
 ''',
-
     "tests/conftest.py": '''"""Pytest configuration and fixtures."""
 
 import os
@@ -791,7 +766,6 @@ def client(mock_vector_store, mock_rag_chain):
     with TestClient(app) as c:
         yield c
 ''',
-
     "tests/test_health.py": '''"""Tests for health endpoints."""
 
 
@@ -806,7 +780,6 @@ def test_root_endpoint(client):
     assert response.status_code == 200
     assert "message" in response.json()
 ''',
-
     "tests/test_query.py": '''"""Tests for query endpoints."""
 
 
@@ -820,7 +793,6 @@ def test_query_empty_question(client):
     response = client.post("/query", json={"question": ""})
     assert response.status_code == 422
 ''',
-
     # ===========================================
     # GitHub Actions
     # ===========================================
@@ -866,7 +838,6 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build -t rag-qa-system .
 """,
-
     ".github/workflows/deploy.yml": """name: CD - Deploy to AWS
 
 on:
@@ -923,7 +894,6 @@ jobs:
             QDRANT_URL=${{ secrets.QDRANT_URL }}
             QDRANT_API_KEY=${{ secrets.QDRANT_API_KEY }}
 """,
-
     # ===========================================
     # Documentation
     # ===========================================
@@ -972,7 +942,6 @@ docker-compose up --build
 - Docker
 - GitHub Actions
 """,
-
     "sample_data/.gitkeep": "",
 }
 
@@ -983,10 +952,7 @@ def create_project_structure():
     base_path = Path.cwd()
 
     # Check if we should create in current directory or new directory
-    if base_path.name == PROJECT_NAME:
-        project_path = base_path
-    else:
-        project_path = base_path / PROJECT_NAME
+    project_path = base_path if base_path.name == PROJECT_NAME else base_path / PROJECT_NAME
 
     print(f"Creating project structure in: {project_path}")
     print("=" * 50)

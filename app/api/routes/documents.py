@@ -1,7 +1,8 @@
 """Document management endpoints."""
 
+
 from fastapi import APIRouter, File, HTTPException, UploadFile
-import os
+
 from app.api.schemas import (
     DocumentListResponse,
     DocumentUploadResponse,
@@ -56,8 +57,7 @@ async def upload_document(
         #         status_code=400,
         #         detail=f"Total size of collection must be at most {processor.total_size} MB (current size: {current_size:.2f} MB)",
         #     )
-        
-        
+
         chunks = processor.process_upload(file.file, file.filename)
 
         if not chunks:

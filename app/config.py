@@ -56,12 +56,11 @@ class Settings(BaseSettings):
     app_name: str = "RAG Q&A System"
     app_version: str = "0.1.0"
 
-    # max document size upload limit in mb 
-    document_size: float =4.0
+    # max document size upload limit in mb
+    document_size: float = 4.0
 
-    # total size of documents in collection in mb    
+    # total size of documents in collection in mb
     # total_size: float = 3.0
-
 
 
 @lru_cache

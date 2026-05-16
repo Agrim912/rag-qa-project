@@ -15,7 +15,6 @@ This will create the following structure:
     └── tests/
 """
 
-import os
 from pathlib import Path
 
 # Project root directory name
@@ -40,11 +39,9 @@ python-dotenv>=1.0.0
 pydantic>=2.5.0
 pydantic-settings>=2.1.0
 """,
-
     ".env.example": """# Environment Variables
 # Add your configuration here
 """,
-
     ".gitignore": """# Python
 __pycache__/
 *.py[cod]
@@ -73,10 +70,8 @@ venv/
 # OS
 .DS_Store
 """,
-
     # App files
     "app/__init__.py": """""",
-
     "app/main.py": """from fastapi import FastAPI
 
 app = FastAPI(title="FastAPI Application")
@@ -96,15 +91,10 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
 """,
-
     "app/api/__init__.py": """""",
-
     "app/api/routes/__init__.py": """""",
-
     "app/core/__init__.py": """""",
-
     "app/utils/__init__.py": """""",
-
     # Tests
     "tests/__init__.py": """""",
 }
@@ -116,10 +106,7 @@ def create_project_structure():
     base_path = Path.cwd()
 
     # Check if we should create in current directory or new directory
-    if base_path.name == PROJECT_NAME:
-        project_path = base_path
-    else:
-        project_path = base_path / PROJECT_NAME
+    project_path = base_path if base_path.name == PROJECT_NAME else base_path / PROJECT_NAME
 
     print(f"Creating project structure in: {project_path}")
     print("=" * 50)
