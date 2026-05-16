@@ -60,12 +60,15 @@ async def upload_document(
             document_size = None
 
         # If file size > document_size mb then raise error
-        if file_size is not None and document_size is not None:
-            if file_size > document_size * 1024 * 1024:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"File size must be at most {document_size} MB",
-                )
+        if (
+            file_size is not None
+            and document_size is not None
+            and file_size > document_size * 1024 * 1024
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=f"File size must be at most {document_size} MB",
+            )
         # total size user can upload is total_size - current size of collection
         # vector_store = VectorStoreService()
         # collection_info = vector_store.get_collection_info()
