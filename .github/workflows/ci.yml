@@ -114,17 +114,14 @@ jobs:
         with:
           context: .
           push: false
-          tags: rag-qa-system:${{ github.sha }}
+          load: true
+          tags: rag-qa-system:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Test Docker image
         run: |
-          docker build -t rag-qa-system:test .
-          docker run --rm \
-            -e OPENAI_API_KEY=test-key \
-            -e QDRANT_URL=http://localhost:6333 \
-            -e QDRANT_API_KEY=test-key \
+          docker run --rm --env-file .env \
             rag-qa-system:test python -c "from app.main import app; print('App loaded successfully')"
 
   # ============================================
