@@ -44,7 +44,7 @@ COPY app/ ./app/
 COPY static/ ./static/
 
 # Set ownership to non-root user
-RUN chown -R appuser:appgroup /app /static
+RUN chown -R appuser:appgroup /app
 
 # Switch to non-root user
 USER appuser
